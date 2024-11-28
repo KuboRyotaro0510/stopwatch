@@ -1,28 +1,40 @@
-from django.contrib.auth import authenticate
-
-# from django.shortcuts import render
-from rest_framework.decorators import api_view
+from django.contrib.auth import login
+from rest_framework import generics, status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-# from rest_framework.viewsets import ModelViewSet
-
-# from .models import CustomUser
-# from .serializers import UserSerilaizer
+from .models import CustomUser
+from .serializers import LoginSerializer, UserSerializer
 
 
-# class UserViewSet(ModelViewSet):
-#     queryset = CustomUser.objects.all()
-#     serializer_class = UserSerilaizer
+class LoginViewSet(generics.CreateAPIView):
+    serializer_class = LoginSerializer
+    permission_classes = [AllowAny]
 
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        password = request.data.get("password")
 
-@api_view(["POST"])
-def login_view(request):
-    email = request.data.get("email")
-    password = request.data.get("password")
-    user = authenticate(email=email, password=password)
-    if user is not None:
-        # ユーザーが存在する場合の処理
-        return Response({"message": "ログイン成功"})
-    else:
-        # ユーザーが存在しない場合の処理
-        return Response({"message": "ユーザーが存在しません"}, status=400)
+        try:
+            user = CustomUser.objects.get(email=email)
+
+            if user.check_password(password):
+                login(request, user)
+                return Response(
+                    {
+                        "user": UserSerializer(
+                            user, context=self.get_serializer_context()
+                        ).data
+                    }
+                )
+            else:
+                return Response(
+                    {"error": "パスワードが間違っています。"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+        except CustomUser.DoesNotExist:
+            return Response(
+                {"error": "ユーザーが存在しません。"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
