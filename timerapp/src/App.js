@@ -6,6 +6,8 @@ import Login from "./components/login";
 import Timer from "./components/timer";
 import PrivateRoute from "./PrivateRoute";
 
+export const apiURL = "http://localhost:8000/api/";
+
 const App = () => {
   return (
     <AuthProvider>

@@ -22,10 +22,12 @@ function Stopwatch() {
     clearInterval(intervalRef.current);
     setIsRunning(false);
     setTime(0);
-    setLaplist((laplist) => []);
-    const list = document.getElementById("list");
-    while (list.firstChild) {
-      list.removeChild(list.firstChild);
+    // setLaplist([]);
+    var list = document.getElementById("list");
+    list.length = 0;
+    const len = list.children.length;
+    for (var i = 0; i < len; i++) {
+      list.removeChild(list.children[0]);
     }
   }
 
@@ -35,7 +37,7 @@ function Stopwatch() {
     const minutes = `0${Math.floor(time / 60000) % 60}`.slice(-2);
     const hours = `0${Math.floor(time / 3600000)}`.slice(-2);
     const laptime = hours + ":" + minutes + ":" + seconds + ":" + milliseconds;
-    setLaplist((currentLaplist) => [...currentLaplist, time]);
+    setLaplist((laptime) => [...laptime, time]);
     const list = document.getElementById("list");
     let lapHistory = document.createElement("li");
     lapHistory.textContent = laptime;
