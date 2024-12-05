@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import Logout from "./logout";
 
 function Stopwatch() {
   const [time, setTime] = useState(0);
@@ -22,7 +23,6 @@ function Stopwatch() {
     clearInterval(intervalRef.current);
     setIsRunning(false);
     setTime(0);
-    // setLaplist([]);
     var list = document.getElementById("list");
     list.length = 0;
     const len = list.children.length;
@@ -68,6 +68,7 @@ function Stopwatch() {
       <div>
         <link rel="stylesheet" href="" />
       </div>
+      <Logout />
     </>
   );
 }

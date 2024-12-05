@@ -1,10 +1,19 @@
 from django.contrib.auth import authenticate, login
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .serializers import CustomUserSerializer, MyTokenObtainPairSerializer
+from .serializers import CustomUserSerializer
+
+
+def CsrfView(request):
+    return JsonResponse({"token": get_token(request)})
+
+
+def PingView(request):
+    return JsonResponse({"result": True})
 
 
 class LoginView(generics.GenericAPIView):
@@ -15,8 +24,10 @@ class LoginView(generics.GenericAPIView):
         email = request.data.get("email")
         password = request.data.get("password")
         user = authenticate(request, email=email, password=password)
-        if user:
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
             login(request, user)
+            print("view validate")
             return Response(
                 {
                     "user": CustomUserSerializer(
@@ -25,9 +36,5 @@ class LoginView(generics.GenericAPIView):
                 }
             )
         return Response(
-            {"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED
+            {"error": "エラーが発生しました"}, status=status.HTTP_401_UNAUTHORIZED
         )
-
-
-class ObtainTokenPairWithColorView(TokenObtainPairView):
-    serializer_class = MyTokenObtainPairSerializer

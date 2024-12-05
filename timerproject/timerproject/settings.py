@@ -34,12 +34,16 @@ SECRET_KEY = "django-insecure-leu@#vgrn5p5qk+)gp2^vd+3l@#sm1p^l7=@n07my1s(1t=hqk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "timer.apps.TimerConfig",
     "rest_framework",
     "django.contrib.admin",
@@ -48,10 +52,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "corsheaders",
-    "rest_framework_simplejwt",
-    "rest_framework.authtoken",
-    "djoser",
 ]
 
 MIDDLEWARE = [
@@ -156,7 +156,7 @@ CORS_ORIGIN_WHITELIST = [
 
 # CSRF_TRUSTED_ORIGINS = ["localhost:3000", "127.0.0.1"]
 
-SESSION_COOKIE_SAMESITE = "None"  # default='Lax'
+SESSION_COOKIE_SAMESITE = "Lax"  # default='Lax'
 SESSION_COOKIE_SECURE = False
 
 SIMPLE_JWT = {
@@ -178,7 +178,7 @@ SIMPLE_JWT = {
 # 自身以外のオリジンのHTTPリクエスト内にクッキーを含めることを許可する
 CORS_ALLOW_CREDENTIALS = True
 # アクセスを許可したいURL（アクセス元）を追加
-CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:8000"]
 # プリフライト(事前リクエスト)の設定
 # 30分だけ許可
 CORS_PREFLIGHT_MAX_AGE = 60 * 30
@@ -189,3 +189,7 @@ SESSION_COOKIE_AGE = 1209600
 SESSION_COOKIE_DOMAIN = "localhost"
 
 SESSION_COOKIE_PATH = "/api"
+SESSION_ENGINE = (
+    "django.contrib.sessions.backends.db"  # デフォルト: データベースセッション
+)
+CSRF_COOKIE_SECURE = False

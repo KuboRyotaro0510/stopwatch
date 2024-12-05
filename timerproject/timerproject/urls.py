@@ -17,9 +17,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from timer.views import CsrfView, PingView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("timer.urls")),
-    path("api/v1/auth/", include("djoser.urls.jwt")),
+    path("csrf/", CsrfView),
+    path("ping/", PingView),
 ]
